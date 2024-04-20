@@ -170,7 +170,7 @@ if __name__ == "__main__":
 def plot_confusion_matrix(config, confusion_matrix):
     # 拼接保存路径
     save_path = os.path.join("./result", config.model_name + "confusion_matrix")
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 10))
     sns.set(font_scale=1)
     sns.heatmap(
         confusion_matrix,
@@ -183,5 +183,26 @@ def plot_confusion_matrix(config, confusion_matrix):
     plt.xlabel("Predicted Label")
     plt.ylabel("True Label")
     plt.title("Confusion Matrix")
+    plt.savefig(save_path)
+    plt.show()
+
+def plot_precision_recall_matrix(config, test_report):
+    # 解析分类报告中的准确率和召回率
+    save_path = os.path.join("./result", config.model_name + "precision_recall_matrix")
+    report_lines = test_report.split('\n')[2:-3]  # 去掉报告中的前两行和最后三行
+    precision = []
+    recall = []
+    for line in report_lines:
+        line_data = line.split()
+        precision.append(float(line_data[1]))
+        recall.append(float(line_data[2]))
+
+    # 绘制准确率-召回率矩阵
+    plt.figure(figsize=(10, 10))
+    plt.plot(recall, precision, marker='o', linestyle='-')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.grid(True)
     plt.savefig(save_path)
     plt.show()

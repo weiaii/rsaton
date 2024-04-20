@@ -110,6 +110,7 @@ def test(config, model, test_iter):
     print("Confusion Matrix...")
     print(test_confusion)
     plot_confusion_matrix(config, test_confusion)
+    plot_precision_recall_matrix(config, test_report)  
     time_dif = get_time_dif(start_time)
     print("Time usage:", time_dif)
 
