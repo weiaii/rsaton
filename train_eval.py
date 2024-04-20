@@ -109,7 +109,9 @@ def train(config, model, train_iter, dev_iter, test_iter):
                 flag = True
                 break
         train_losses.append(sum(epoch_train_losses) / len(epoch_train_losses))
-        train_accuracies.append(sum(epoch_train_accuracies) / len(epoch_train_accuracies))
+        train_accuracies.append(
+            sum(epoch_train_accuracies) / len(epoch_train_accuracies)
+        )
 
         dev_losses.append(sum(epoch_dev_losses) / len(epoch_dev_losses))
         dev_accuracies.append(sum(epoch_dev_accuracies) / len(epoch_dev_accuracies))
@@ -118,7 +120,9 @@ def train(config, model, train_iter, dev_iter, test_iter):
             break
     writer.close()
     test(config, model, test_iter)
-    plot_accuracy_loss(config,train_accuracies, dev_accuracies, train_losses, dev_losses)
+    plot_accuracy_loss(
+        config, train_accuracies, dev_accuracies, train_losses, dev_losses
+    )
 
 
 def test(config, model, test_iter):
