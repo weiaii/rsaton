@@ -121,7 +121,6 @@ def train(config, model, train_iter, dev_iter, test_iter):
     plot_accuracy_loss(config,train_accuracies, dev_accuracies, train_losses, dev_losses)
 
 
-
 def test(config, model, test_iter):
     # test
     model.load_state_dict(torch.load(config.save_path))
