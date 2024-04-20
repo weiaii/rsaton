@@ -171,7 +171,7 @@ def plot_confusion_matrix(config, confusion_matrix):
     # 拼接保存路径
     save_path = os.path.join("./result", config.model_name + "confusion_matrix")
     plt.figure(figsize=(8, 6))
-    sns.set(font_scale=1.2)
+    sns.set(font_scale=1)
     sns.heatmap(
         confusion_matrix,
         annot=True,
