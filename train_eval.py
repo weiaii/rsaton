@@ -136,7 +136,6 @@ def test(config, model, test_iter):
     # print("Confusion Matrix...")
     # print(test_confusion)
     plot_confusion_matrix(config, test_confusion)
-    plot_precision_recall_matrix(config, test_report)
     with open(
         os.path.join("result", config.model_name + "classification_report"), "w"
     ) as f:
