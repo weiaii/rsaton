@@ -185,10 +185,11 @@ def plot_confusion_matrix(config, confusion_matrix):
     plt.title("Confusion Matrix")
     plt.savefig(save_path)
 
+
 def plot_precision_recall_matrix(config, test_report):
     # 解析分类报告中的准确率和召回率
     save_path = os.path.join("result", config.model_name + "precision_recall_matrix")
-    report_lines = test_report.split('\n')[2:-5]  # 去掉报告中的前两行和最后三行
+    report_lines = test_report.split("\n")[2:-5]  # 去掉报告中的前两行和最后三行
     precision = []
     recall = []
     for line in report_lines:
@@ -198,10 +199,36 @@ def plot_precision_recall_matrix(config, test_report):
 
     # 绘制准确率-召回率矩阵
     plt.figure(figsize=(10, 10))
-    plt.plot(recall, precision, marker='o', linestyle='-')
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.title('Precision-Recall Curve')
+    plt.plot(recall, precision, marker="o", linestyle="-")
+    plt.xlabel("Recall")
+    plt.ylabel("Precision")
+    plt.title("Precision-Recall Curve")
     plt.grid(True)
     plt.savefig(save_path)
 
+
+def plot_accuracy_loss(config, train_accuracies, dev_accuracies, train_losses, dev_losses):
+    save_path = os.path.join("result", config.model_name + "accuracy_loss")
+    epochs = range(1, len(train_accuracies) + 1)
+
+    # 绘制准确率曲线
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, train_accuracies, "bo-", label="Training Accuracy")
+    plt.plot(epochs, dev_accuracies, "r*-", label="Validation Accuracy")
+    plt.title("Training and Validation Accuracy")
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
+    plt.legend()
+
+    # 绘制损失曲线
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, train_losses, "bo-", label="Training Loss")
+    plt.plot(epochs, dev_losses, "r*-", label="Validation Loss")
+    plt.title("Training and Validation Loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig(save_path)

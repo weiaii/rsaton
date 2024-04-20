@@ -10,6 +10,7 @@ from utils import get_time_dif
 from tensorboardX import SummaryWriter
 from utils import plot_confusion_matrix
 from utils import plot_precision_recall_matrix
+from utils import plot_accuracy_loss
 
 
 # 权重初始化，默认xavier
@@ -44,8 +45,17 @@ def train(config, model, train_iter, dev_iter, test_iter):
         log_dir=config.log_path + "/" + time.strftime("%m-%d_%H.%M", time.localtime())
     )
 
+    train_losses = []  # 存储每个epoch的训练损失
+    train_accuracies = []  # 存储每个epoch的训练准确率
+    dev_losses = []  # 存储每个epoch的验证损失
+    dev_accuracies = []  # 存储每个epoch的验证准确率
+
     for epoch in range(config.num_epochs):
         print("Epoch [{}/{}]".format(epoch + 1, config.num_epochs))
+        epoch_train_losses = []  # 存储当前epoch的训练损失
+        epoch_train_accuracies = []  # 存储当前epoch的训练准确率
+        epoch_dev_losses = []  # 存储当前epoch的训练损失
+        epoch_dev_accuracies = []  # 存储当前epoch的训练准确率
         # scheduler.step() # 学习率衰减
         for i, (trains, labels) in enumerate(train_iter):
             outputs = model(trains)
@@ -53,12 +63,20 @@ def train(config, model, train_iter, dev_iter, test_iter):
             loss = F.cross_entropy(outputs, labels)
             loss.backward()
             optimizer.step()
+
             if total_batch % 100 == 0:
                 # 每多少轮输出在训练集和验证集上的效果
                 true = labels.data.cpu()
                 predic = torch.max(outputs.data, 1)[1].cpu()
                 train_acc = metrics.accuracy_score(true, predic)
+                epoch_train_losses.append(loss.item())
+                epoch_train_accuracies.append(train_acc)
+
                 dev_acc, dev_loss = evaluate(config, model, dev_iter)
+
+                epoch_dev_losses.append(dev_loss.item())
+                epoch_dev_accuracies.append(dev_acc)
+
                 if dev_loss < dev_best_loss:
                     dev_best_loss = dev_loss
                     torch.save(model.state_dict(), config.save_path)
@@ -90,10 +108,18 @@ def train(config, model, train_iter, dev_iter, test_iter):
                 print("No optimization for a long time, auto-stopping...")
                 flag = True
                 break
+        train_losses.append(sum(epoch_train_losses) / len(epoch_train_losses))
+        train_accuracies.append(sum(epoch_train_accuracies) / len(epoch_train_accuracies))
+
+        dev_losses.append(sum(epoch_dev_losses) / len(epoch_dev_losses))
+        dev_accuracies.append(sum(epoch_dev_accuracies) / len(epoch_dev_accuracies))
+
         if flag:
             break
     writer.close()
     test(config, model, test_iter)
+    plot_accuracy_loss(config,train_accuracies, dev_accuracies, train_losses, dev_losses)
+
 
 
 def test(config, model, test_iter):
@@ -106,19 +132,17 @@ def test(config, model, test_iter):
     )
     msg = "Test Loss: {0:>5.2},  Test Acc: {1:>6.2%}"
     print(msg.format(test_loss, test_acc))
-    print("Precision, Recall and F1-Score...")
-    print(test_report)
-    print("Confusion Matrix...")
-    print(test_confusion)
+    # print("Precision, Recall and F1-Score...")
+    # print(test_report)
+    # print("Confusion Matrix...")
+    # print(test_confusion)
     plot_confusion_matrix(config, test_confusion)
-    print("test_report")
-    print(test_report)
     plot_precision_recall_matrix(config, test_report)
-    time_dif = get_time_dif(start_time)
     with open(
         os.path.join("result", config.model_name + "classification_report"), "w"
     ) as f:
         f.write(test_report)
+    time_dif = get_time_dif(start_time)
     print("Time usage:", time_dif)
 
 
