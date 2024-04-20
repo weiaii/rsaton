@@ -1,4 +1,5 @@
 # coding: UTF-8
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -42,7 +43,6 @@ def train(config, model, train_iter, dev_iter, test_iter):
     writer = SummaryWriter(
         log_dir=config.log_path + "/" + time.strftime("%m-%d_%H.%M", time.localtime())
     )
-
 
     for epoch in range(config.num_epochs):
         print("Epoch [{}/{}]".format(epoch + 1, config.num_epochs))
@@ -111,8 +111,14 @@ def test(config, model, test_iter):
     print("Confusion Matrix...")
     print(test_confusion)
     plot_confusion_matrix(config, test_confusion)
-    plot_precision_recall_matrix(config, test_report)  
+    print("test_report")
+    print(test_report)
+    plot_precision_recall_matrix(config, test_report)
     time_dif = get_time_dif(start_time)
+    with open(
+        os.path.join("result", config.model_name + "classification_report"), "w"
+    ) as f:
+        f.write(test_report)
     print("Time usage:", time_dif)
 
 
