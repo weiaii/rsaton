@@ -155,7 +155,7 @@ def plot_confusion_matrix(config, confusion_matrix):
 
 
 def plot_test_report(config,test_report):
-    save_path = os.path.join("result", config.model_name + "confusion_matrix")
+    save_path = os.path.join("result", config.model_name + "test_report")
     categories = []  # 存储类别名
     precisions = []  # 存储精确率
     recalls = []  # 存储召回率
