@@ -10,6 +10,7 @@ from utils import get_time_dif
 from tensorboardX import SummaryWriter
 from utils import plot_confusion_matrix
 from utils import plot_accuracy_loss
+from utils import plot_test_report
 
 
 # 权重初始化，默认xavier
@@ -143,6 +144,7 @@ def test(config, model, test_iter):
         os.path.join("result", config.model_name + "classification_report"), "w"
     ) as f:
         f.write(test_report)
+    plot_test_report(config,test_report)
     time_dif = get_time_dif(start_time)
     print("Time usage:", time_dif)
 

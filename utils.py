@@ -154,24 +154,30 @@ def plot_confusion_matrix(config, confusion_matrix):
     plt.savefig(save_path)
 
 
-def plot_precision_recall_matrix(config, test_report):
-    # 解析分类报告中的准确率和召回率
-    save_path = os.path.join("result", config.model_name + "precision_recall_matrix")
-    report_lines = test_report.split("\n")[2:-5]  # 去掉报告中的前两行和最后三行
-    precision = []
-    recall = []
-    for line in report_lines:
-        line_data = line.split()
-        precision.append(float(line_data[1]))
-        recall.append(float(line_data[2]))
+def plot_test_report(config,test_report):
+    save_path = os.path.join("result", config.model_name + "confusion_matrix")
+    categories = []  # 存储类别名
+    precisions = []  # 存储精确率
+    recalls = []  # 存储召回率
 
-    # 绘制准确率-召回率矩阵
-    plt.figure(figsize=(10, 10))
-    plt.plot(recall, precision, marker="o", linestyle="-")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.title("Precision-Recall Curve")
-    plt.grid(True)
+    # 解析 test_report，提取类别名、精确率和召回率
+    for line in test_report.split('\n')[2:-4]:
+        category, precision, recall, _, _ = line.split()
+        categories.append(category)
+        precisions.append(float(precision))
+        recalls.append(float(recall))
+
+    # 绘制柱状图
+    bar_width = 0.35
+    index = np.arange(len(categories))
+    plt.bar(index, precisions, bar_width, label='Precision')
+    plt.bar(index + bar_width, recalls, bar_width, label='Recall')
+    plt.xlabel('Categories')
+    plt.ylabel('Scores')
+    plt.title('Precision and Recall for Each Category')
+    plt.xticks(index + bar_width / 2, categories)
+    plt.legend()
+    plt.tight_layout()
     plt.savefig(save_path)
 
 
