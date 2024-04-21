@@ -130,6 +130,7 @@ def test(config, model, test_iter):
     model.load_state_dict(torch.load(config.save_path))
     model.eval()
     start_time = time.time()
+    print('start-time:',start_time)
     test_acc, test_loss, test_report, test_confusion = evaluate(
         config, model, test_iter, test=True
     )
@@ -146,6 +147,7 @@ def test(config, model, test_iter):
         f.write(test_report)
     plot_test_report(config,test_report)
     time_dif = get_time_dif(start_time)
+    print('end-time:',time.time())
     print("Time usage:", time_dif)
 
 
