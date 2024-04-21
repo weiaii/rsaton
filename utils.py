@@ -161,7 +161,7 @@ def plot_test_report(config,test_report):
     recalls = []  # 存储召回率
 
     # 解析 test_report，提取类别名、精确率和召回率
-    for line in test_report.split('\n')[2:-4]:
+    for line in test_report.split('\n')[2:-5]:
         category, precision, recall, _, _ = line.split()
         categories.append(category)
         precisions.append(float(precision))
