@@ -9,7 +9,6 @@ import time
 from utils import get_time_dif
 from tensorboardX import SummaryWriter
 from utils import plot_confusion_matrix
-from utils import plot_precision_recall_matrix
 from utils import plot_accuracy_loss
 
 
