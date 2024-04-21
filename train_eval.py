@@ -119,6 +119,7 @@ def train(config, model, train_iter, dev_iter, test_iter):
         if flag:
             break
     writer.close()
+    print("Train Time Usage:", get_time_dif(start_time))
     test(config, model, test_iter)
     plot_accuracy_loss(
         config, train_accuracies, dev_accuracies, train_losses, dev_losses
@@ -130,7 +131,6 @@ def test(config, model, test_iter):
     model.load_state_dict(torch.load(config.save_path))
     model.eval()
     start_time = time.time()
-    print('start-time:',start_time)
     test_acc, test_loss, test_report, test_confusion = evaluate(
         config, model, test_iter, test=True
     )
@@ -145,10 +145,9 @@ def test(config, model, test_iter):
         os.path.join("result", config.model_name + "classification_report"), "w"
     ) as f:
         f.write(test_report)
-    plot_test_report(config,test_report)
+    plot_test_report(config, test_report)
     time_dif = get_time_dif(start_time)
-    print('end-time:',time.time())
-    print("Time usage:", time_dif)
+    print("Test Time usage:", time_dif)
 
 
 def evaluate(config, model, data_iter, test=False):
